@@ -3,60 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compass Direction</title>
+    <title>Compass Heading</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
         }
-        #compass {
+        #heading {
             font-size: 24px;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Compass Direction</h1>
-    <div id="compass">Waiting for location...</div>
+    <h1>Compass Heading</h1>
+    <div id="heading">Waiting for location...</div>
 
     <script>
-        function showCompassDirection(position) {
-            const compassElement = document.getElementById('compass');
+        function showHeading(position) {
+            const headingElement = document.getElementById('heading');
             const heading = position.coords.heading;
 
             if (typeof heading !== 'undefined') {
-                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-                const index = Math.round(heading / 45) % 8;
-                const compassDirection = directions[index];
-                compassElement.textContent = `Compass Direction: ${compassDirection}`;
+                headingElement.textContent = `Heading: ${heading.toFixed(2)}°`;
             } else {
-                compassElement.textContent = 'Compass direction not available.';
+                headingElement.textContent = 'Heading not available.';
             }
         }
 
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(showCompassDirection, handleLocationError);
+                navigator.geolocation.watchPosition(showHeading, handleLocationError);
             } else {
                 alert('Geolocation is not supported by this browser.');
             }
         }
 
         function handleLocationError(error) {
-            const compassElement = document.getElementById('compass');
+            const headingElement = document.getElementById('heading');
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    compassElement.textContent = 'User denied the request for Geolocation.';
+                    headingElement.textContent = 'User denied the request for Geolocation.';
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    compassElement.textContent = 'Location information is unavailable.';
+                    headingElement.textContent = 'Location information is unavailable.';
                     break;
                 case error.TIMEOUT:
-                    compassElement.textContent = 'The request to get user location timed out.';
+                    headingElement.textContent = 'The request to get user location timed out.';
                     break;
                 case error.UNKNOWN_ERROR:
-                    compassElement.textContent = 'An unknown error occurred.';
+                    headingElement.textContent = 'An unknown error occurred.';
                     break;
             }
         }
