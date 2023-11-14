@@ -3,57 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compass Heading</title>
+    <title>Compass Direction and Heading</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
         }
-        #heading {
+        #compass {
             font-size: 24px;
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+        #heading {
+            font-size: 18px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Compass Heading</h1>
-    <div id="heading">Waiting for location...</div>
+    <h1>Compass Direction and Heading</h1>
+    <div id="compass">Waiting for location...</div>
+    <div id="heading"></div>
 
     <script>
-        function showHeading(position) {
+        function showCompassDirection(position) {
+            const compassElement = document.getElementById('compass');
             const headingElement = document.getElementById('heading');
+
             const heading = position.coords.heading;
 
             if (typeof heading !== 'undefined') {
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                const index = Math.round(heading / 45) % 8;
+                const compassDirection = directions[index];
+                compassElement.textContent = `Compass Direction: ${compassDirection}`;
                 headingElement.textContent = `Heading: ${heading.toFixed(2)}°`;
             } else {
-                headingElement.textContent = 'Heading not available.';
+                compassElement.textContent = 'Compass direction not available.';
+                headingElement.textContent = '';
             }
         }
 
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(showHeading, handleLocationError);
+                navigator.geolocation.watchPosition(showCompassDirection, handleLocationError);
             } else {
                 alert('Geolocation is not supported by this browser.');
             }
         }
 
         function handleLocationError(error) {
+            const compassElement = document.getElementById('compass');
             const headingElement = document.getElementById('heading');
+
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    headingElement.textContent = 'User denied the request for Geolocation.';
+                    compassElement.textContent = 'User denied the request for Geolocation.';
+                    headingElement.textContent = '';
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    headingElement.textContent = 'Location information is unavailable.';
+                    compassElement.textContent = 'Location information is unavailable.';
+                    headingElement.textContent = '';
                     break;
                 case error.TIMEOUT:
-                    headingElement.textContent = 'The request to get user location timed out.';
+                    compassElement.textContent = 'The request to get user location timed out.';
+                    headingElement.textContent = '';
                     break;
                 case error.UNKNOWN_ERROR:
-                    headingElement.textContent = 'An unknown error occurred.';
+                    compassElement.textContent = 'An unknown error occurred.';
+                    headingElement.textContent = '';
                     break;
             }
         }
