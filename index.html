@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compass Direction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #compass {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Compass Direction</h1>
+    <div id="compass">Waiting for location...</div>
+
+    <script>
+        function showCompassDirection(position) {
+            const compassElement = document.getElementById('compass');
+            const heading = position.coords.heading;
+
+            if (typeof heading !== 'undefined') {
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                const index = Math.round(heading / 45) % 8;
+                const compassDirection = directions[index];
+                compassElement.textContent = `Compass Direction: ${compassDirection}`;
+            } else {
+                compassElement.textContent = 'Compass direction not available.';
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showCompassDirection, handleLocationError);
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function handleLocationError(error) {
+            const compassElement = document.getElementById('compass');
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    compassElement.textContent = 'User denied the request for Geolocation.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    compassElement.textContent = 'Location information is unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    compassElement.textContent = 'The request to get user location timed out.';
+                    break;
+                case error.UNKNOWN_ERROR:
+                    compassElement.textContent = 'An unknown error occurred.';
+                    break;
+            }
+        }
+
+        // Get location when the page loads
+        document.addEventListener('DOMContentLoaded', getLocation);
+    </script>
+</body>
+</html>
